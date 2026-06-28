@@ -1,76 +1,169 @@
+import csv
+import os
 import deposit as dp
 import withdraw as wd
 import balance as bl
+from customers import Customer
 
+customers = []
 
-customers = [] ## it is a empty  list
+# ---------------- Load Users ----------------
+
+if os.path.exists("userlist.csv"):
+
+    file = open("userlist.csv", "r", newline="")
+
+    reader = csv.DictReader(file)
+
+    for row in reader:
+
+        user = Customer(
+            row["Name"],
+            int(row["Age"]),
+            row["Username"],
+            row["Email"],
+            row["Password"],
+            int(row["Balance"])
+        )
+
+        customers.append(user)
+
+    file.close()
+
 print("====== WELCOME TO OUR BANK ======")
-while True: ## enter choices
+
+while True:
+
     print("""
     1. Signup
     2. Login
     3. Exit
     """)
-    
-    ## it will ask user to enter choice
+
     choice = int(input("Enter your choice: "))
+
     match choice:
-        case 1: ## signup with details 
-            user = {} ## empty dictionary
-            user['Name'] = input("Enter your name: ")
+
+        # ---------------- Signup ----------------
+
+        case 1:
+
+            name = input("Enter your Name: ")
+
             try:
-                user['Age'] = int(input("Enter your age: "))
-            except Exception as msg: ## if age is not integer in msg:
-                print(msg)
-                user['Age'] = int(input("Enter your age: "))
-            else:
-                print(user['Age'], "is valid")
-            finally:
-                print("You are eligible to open an account")
-            user['Username'] = input("Enter your username: ").strip().lower() ## it will convert to lower case
-            user['Email'] = input("Enter your email: ")
-            user['Password'] = input("Enter your password: ")
-            try:
-                user['Balance'] = int(input("Enter your balance: "))
+                age = int(input("Enter your Age: "))
             except Exception as msg:
                 print(msg)
-                user['Balance'] = int(input("Enter your balance: "))
-            else:
-                print(user['Balance'], "is valid")
-            finally:
-                print("You are eligible to open an account")
-            customers.append(user) ## it will add user to list
+                continue
+
+            username = input("Enter Username: ").strip().lower()
+            email = input("Enter Email: ")
+            password = input("Enter Password: ")
+
+            try:
+                balance = int(input("Enter Balance: "))
+            except Exception as msg:
+                print(msg)
+                continue
+
+            user = Customer(
+                name,
+                age,
+                username,
+                email,
+                password,
+                balance
+            )
+
+            customers.append(user)
+
+            header = [
+                "Name",
+                "Age",
+                "Username",
+                "Email",
+                "Password",
+                "Balance"
+            ]
+
+            file_exists = os.path.exists("userlist.csv")
+
+            file = open("userlist.csv", "a", newline="")
+
+            writer = csv.DictWriter(file, fieldnames=header)
+
+            if not file_exists:
+                writer.writeheader()
+
+            writer.writerow({
+                "Name": user.name,
+                "Age": user.age,
+                "Username": user.username,
+                "Email": user.email,
+                "Password": user.password,
+                "Balance": user.balance
+            })
+
+            file.close()
+
             print("Signup Successful!")
-        case 2: ## login with user name and password
-            username = input("Enter your username: ").strip().lower() ## it will convert to lower case 
-            password = input("Enter your password: ")
+
+        # ---------------- Login ----------------
+
+        case 2:
+
+            username = input("Enter Username: ").strip().lower()
+            password = input("Enter Password: ")
+
+            found = False
+
             for user in customers:
-                if username == user['Username'] and password == user['Password']: ## if username and password matchs then login 
+
+                if username == user.username and password == user.password:
+
+                    found = True
+
                     print("Login Successful!")
-                    while True: ##  after login enter choices    
+
+                    while True:
+
                         print("""
                         1. Deposit
                         2. Withdraw
                         3. Balance
                         4. Logout
                         """)
-                        option = int(input("Enter your choice: "))  ## it will ask user to enter choice 
-                        match option:  
-                            case 1: ## deposit
+
+                        option = int(input("Enter your choice: "))
+
+                        match option:
+
+                            case 1:
                                 dp.deposit(user)
-                            case 2: ## withdraw
+
+                            case 2:
                                 wd.withdraw(user)
-                            case 3: ## balance
-                                bl.balance(user)                              
-                            case 4: ## logout
-                                break 
-                            case _: ## if choice is invalid
-                                print("Invalid Choice")               
-                else: ## if username or password is invalid
-                    print("Invalid Username or Password")    
-        case 3: ## exit
+
+                            case 3:
+                                bl.balance(user)
+
+                            case 4:
+                                print("Logout Successful!")
+                                break
+
+                            case _:
+                                print("Invalid Choice")
+
+                    break
+
+            if found == False:
+                print("Invalid Username or Password")
+
+        # ---------------- Exit ----------------
+
+        case 3:
+            print("Thank You!")
             break
-        case _: ## if choice is invalid
+
+        case _:
             print("Enter a Valid Choice")
-            
-            
