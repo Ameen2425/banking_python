@@ -5,30 +5,51 @@ import withdraw as wd
 import balance as bl
 from customers import Customer
 
-customers = []
+FIELDS = ["Name","Age","Username","Email","Password","Balance"]
 
-# ---------------- Load Users ----------------
+# ---------------- Create CSV ----------------
 
-if os.path.exists("userlist.csv"):
+with open("userlist.csv", "a+", newline="") as file:
+    file.seek(0)
+    writer = csv.DictWriter(file, fieldnames=FIELDS)
+    if file.read() == "":
+        writer.writeheader()
 
-    file = open("userlist.csv", "r", newline="")
+# ---------------- Load Customers ----------------
 
-    reader = csv.DictReader(file)
+def load_customers():
+    customers = []
+    with open("userlist.csv", "r", newline="") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            user = Customer(
+                row["Name"],
+                int(row["Age"]),
+                row["Username"],
+                row["Email"],
+                row["Password"],
+                int(row["Balance"])
+            )
 
-    for row in reader:
+            customers.append(user)
 
-        user = Customer(
-            row["Name"],
-            int(row["Age"]),
-            row["Username"],
-            row["Email"],
-            row["Password"],
-            int(row["Balance"])
-        )
+    return customers
+# ---------------- Save Customers ----------------
 
-        customers.append(user)
-
-    file.close()
+def save_customers(customers):
+    with open("userlist.csv", "w", newline="") as file:
+        writer = csv.DictWriter(file, fieldnames=FIELDS)
+        writer.writeheader()
+        for user in customers:
+            writer.writerow({
+                "Name": user.name,
+                "Age": user.age,
+                "Username": user.username,
+                "Email": user.email,
+                "Password": user.password,
+                "Balance": user.balance
+            })
+# ---------------- Main Program ----------------
 
 print("====== WELCOME TO OUR BANK ======")
 
@@ -41,31 +62,34 @@ while True:
     """)
 
     choice = int(input("Enter your choice: "))
-
     match choice:
 
         # ---------------- Signup ----------------
 
         case 1:
-
-            name = input("Enter your Name: ")
-
+            customers = load_customers()
+            username = input("Enter Username: ").strip().lower()
+            found = False
+            for person in customers:
+                if person.username == username:
+                    found = True
+                    break
+            if found:
+                print("Username already exists.")
+                continue
+            name = input("Enter Name: ")
             try:
-                age = int(input("Enter your Age: "))
+                age = int(input("Enter Age: "))
             except Exception as msg:
                 print(msg)
                 continue
-
-            username = input("Enter Username: ").strip().lower()
             email = input("Enter Email: ")
             password = input("Enter Password: ")
-
             try:
-                balance = int(input("Enter Balance: "))
+                balance = int(input("Enter Opening Balance: "))
             except Exception as msg:
                 print(msg)
                 continue
-
             user = Customer(
                 name,
                 age,
@@ -74,74 +98,55 @@ while True:
                 password,
                 balance
             )
-
             customers.append(user)
-
-            header = [
-                "Name",
-                "Age",
-                "Username",
-                "Email",
-                "Password",
-                "Balance"
-            ]
-
-            file_exists = os.path.exists("userlist.csv")
-
-            file = open("userlist.csv", "a", newline="")
-
-            writer = csv.DictWriter(file, fieldnames=header)
-            
-            if not file_exists:
-                writer.writeheader()
-            writer.writerow({
-                "Name": user.name,
-                "Age": user.age,
-                "Username": user.username,
-                "Email": user.email,
-                "Password": user.password,
-                "Balance": user.balance
-            })
-            file.close()
+            save_customers(customers)
             print("Signup Successful!")
-
-        # ---------------- Login ----------------
+        
+                # ---------------- Login ----------------
 
         case 2:
+            customers = load_customers()
             username = input("Enter Username: ").strip().lower()
             password = input("Enter Password: ")
-            found = False
+            logged_user = None
+
             for user in customers:
-
                 if username == user.username and password == user.password:
-                    found = True
-                    print("Login Successful!")
-                    while True:
-
-                        print("""
-                        1. Deposit
-                        2. Withdraw
-                        3. Balance
-                        4. Logout
-                        """)
-
-                        option = int(input("Enter your choice: "))
-
-                        match option:
-                            case 1:
-                                dp.deposit(user)
-                            case 2:
-                                wd.withdraw(user)
-                            case 3:
-                                bl.balance(user)
-                            case 4:
-                                print("Logout Successful!")
-                                break
-                            case _:
-                                print("Invalid Choice")
+                    logged_user = user
                     break
-            if found == False:
+            if logged_user is None:
                 print("Invalid Username or Password")
+                continue
+            print("Login Successful!")
+            while True:
+                print("""
+                1. Deposit
+                2. Withdraw
+                3. Balance
+                4. Logout
+                """)
+                option = int(input("Enter your choice: "))
+                match option:
+                    # -------- Deposit --------
+                    case 1:
+                        dp.deposit(logged_user)
+                        save_customers(customers)
+                    # -------- Withdraw --------
+
+                    case 2:
+                        wd.withdraw(logged_user)
+                        save_customers(customers)
+                    # -------- Balance --------
+
+                    case 3:
+                        bl.balance(logged_user)
+                    # -------- Logout --------
+
+                    case 4:
+                        print("Logout Successful!")
+                        break
+                    case _:
+                        print("Invalid Choice")
 
         # ---------------- Exit ----------------
 
@@ -149,4 +154,4 @@ while True:
             print("Thank You!")
             break
         case _:
-            print("Enter a Valid Choice")
+            print("Enter Valid Choice")
