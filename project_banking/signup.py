@@ -1,14 +1,25 @@
+from bank import Bank
 from customers import Customer
 from filehandler import FileHandler
 
 
-class Signup:
+class Signup(Bank):
 
     def __init__(self):
 
         self.file = FileHandler()
 
+    # ---------- Polymorphism ----------
+
+    def operation(self):
+
+        print("Signup Operation")
+
+    # ---------- Signup ----------
+
     def signup(self):
+
+        self.operation()
 
         customers = self.file.load_users()
 
@@ -18,7 +29,7 @@ class Signup:
 
         for user in customers:
 
-            if user.username == username:
+            if user.get_username() == username:
 
                 found = True
                 break
@@ -67,4 +78,4 @@ class Signup:
 
         self.file.save_users(customers)
 
-        print(" Signup Successful ")
+        print("Signup Successful")

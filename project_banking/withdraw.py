@@ -1,10 +1,23 @@
-class Withdraw:
+from bank import Bank
+
+
+class Withdraw(Bank):
 
     def __init__(self):
 
         self.amount = 0
 
+    # ---------- Polymorphism ----------
+
+    def operation(self):
+
+        print("Withdraw Operation")
+
+    # ---------- Withdraw ----------
+
     def withdraw(self, user):
+
+        self.operation()
 
         try:
 
@@ -20,14 +33,18 @@ class Withdraw:
             print("Invalid Amount")
             return False
 
-        if self.amount > user.balance:
+        if self.amount > user.get_balance():
 
             print("Insufficient Balance")
             return False
 
-        user.balance = user.balance - self.amount
+        balance = user.get_balance()
+
+        balance = balance - self.amount
+
+        user.set_balance(balance)
 
         print("Withdrawal Successful")
-        print("Current Balance :", user.balance)
+        print("Current Balance :", user.get_balance())
 
         return True

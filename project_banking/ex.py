@@ -4,9 +4,7 @@ from login import Login
 signup = Signup()
 login = Login()
 
-print("===================================")
 print("      WELCOME TO PYTHON BANK")
-print("===================================")
 
 while True:
 
@@ -36,10 +34,7 @@ while True:
             login.login()
 
         case 3:
-
-            print("===================================")
-            print("Thank You For Visiting Python Bank")
-            print("===================================")
+            print("Thank You For Using Python Bank")
             break
 
         case _:

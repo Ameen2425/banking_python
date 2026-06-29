@@ -1,16 +1,27 @@
+from bank import Bank
 from filehandler import FileHandler
 from deposit import Deposit
 from withdraw import Withdraw
 from balance import Balance
 
 
-class Login:
+class Login(Bank):
 
     def __init__(self):
 
         self.file = FileHandler()
 
+    # ---------- Polymorphism ----------
+
+    def operation(self):
+
+        print("Login Operation")
+
+    # ---------- Login ----------
+
     def login(self):
+
+        self.operation()
 
         customers = self.file.load_users()
 
@@ -21,13 +32,11 @@ class Login:
 
         for user in customers:
 
-            if username == user.username and password == user.password:
+            if username == user.get_username() and password == user.get_password():
 
                 found = True
 
-                print("================================")
-                print(" Login Successful ")
-                print("================================")
+                print("Login Successful")
 
                 while True:
 
@@ -38,7 +47,7 @@ class Login:
 4. Logout
 """)
 
-                    option = int(input("Enter your choice : "))
+                    option = int(input("Enter Your Choice : "))
 
                     match option:
 
@@ -46,35 +55,39 @@ class Login:
 
                             deposit = Deposit()
 
-                            deposit.deposit(user)
+                            success = deposit.deposit(user)
 
-                            self.file.save_users(customers)
+                            if success:
 
-                            if deposit.amount > 0:
+                                self.file.save_users(customers)
 
                                 self.file.save_transaction(
-                                    user.username,
+
+                                    user.get_username(),
                                     "Deposit",
                                     deposit.amount,
-                                    user.balance
+                                    user.get_balance()
+
                                 )
 
                         case 2:
 
                             withdraw = Withdraw()
 
-                            withdraw.withdraw(user)
+                            success = withdraw.withdraw(user)
 
-                            self.file.save_users(customers)
+                            if success:
 
-                            if withdraw.amount > 0:
+                                self.file.save_users(customers)
 
                                 self.file.save_transaction(
-                                user.username,
-                                "Withdraw",
-                                 withdraw.amount,
-                                 user.balance
-                                 )
+
+                                    user.get_username(),
+                                    "Withdraw",
+                                    withdraw.amount,
+                                    user.get_balance()
+
+                                )
 
                         case 3:
 
@@ -95,4 +108,4 @@ class Login:
 
         if found == False:
 
-            print("Invalid Username or Password")       
+            print("Invalid Username or Password")
