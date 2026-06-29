@@ -91,10 +91,9 @@ while True:
             file = open("userlist.csv", "a", newline="")
 
             writer = csv.DictWriter(file, fieldnames=header)
-
+            
             if not file_exists:
                 writer.writeheader()
-
             writer.writerow({
                 "Name": user.name,
                 "Age": user.age,
@@ -103,28 +102,20 @@ while True:
                 "Password": user.password,
                 "Balance": user.balance
             })
-
             file.close()
-
             print("Signup Successful!")
 
         # ---------------- Login ----------------
 
         case 2:
-
             username = input("Enter Username: ").strip().lower()
             password = input("Enter Password: ")
-
             found = False
-
             for user in customers:
 
                 if username == user.username and password == user.password:
-
                     found = True
-
                     print("Login Successful!")
-
                     while True:
 
                         print("""
@@ -137,25 +128,18 @@ while True:
                         option = int(input("Enter your choice: "))
 
                         match option:
-
                             case 1:
                                 dp.deposit(user)
-
                             case 2:
                                 wd.withdraw(user)
-
                             case 3:
                                 bl.balance(user)
-
                             case 4:
                                 print("Logout Successful!")
                                 break
-
                             case _:
                                 print("Invalid Choice")
-
                     break
-
             if found == False:
                 print("Invalid Username or Password")
 
@@ -164,6 +148,5 @@ while True:
         case 3:
             print("Thank You!")
             break
-
         case _:
             print("Enter a Valid Choice")
