@@ -1,3 +1,5 @@
-def balance(user):
-    print("Your Balance is:", user['Balance'])
-    
+class Balance:
+
+    def show_balance(self, user):
+
+        print("Current Balance:", user.balance)

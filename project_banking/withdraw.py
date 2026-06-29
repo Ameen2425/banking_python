@@ -1,15 +1,33 @@
-def withdraw(user):
-    try:
-        amount = int(input("Enter amount: "))
-    except Exception as msg:
-        print(msg)
-        amount = int(input("Enter amount: "))
-    else:
-        print(amount, "is valid")
-    finally:
-        print("amount enetered is valid")
-    if amount <= user['Balance']:
-        user['Balance'] -= amount
+class Withdraw:
+
+    def __init__(self):
+
+        self.amount = 0
+
+    def withdraw(self, user):
+
+        try:
+
+            self.amount = int(input("Enter Withdraw Amount : "))
+
+        except Exception as msg:
+
+            print(msg)
+            return False
+
+        if self.amount <= 0:
+
+            print("Invalid Amount")
+            return False
+
+        if self.amount > user.balance:
+
+            print("Insufficient Balance")
+            return False
+
+        user.balance = user.balance - self.amount
+
         print("Withdrawal Successful")
-    else: ## if amount is greater than balance
-        print("Insufficient Balance")
+        print("Current Balance :", user.balance)
+
+        return True
