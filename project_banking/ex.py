@@ -4,7 +4,7 @@ from login import Login
 signup = Signup()
 login = Login()
 
-print("      WELCOME TO PYTHON BANK")
+print("WELCOME TO PYTHON BANK")
 
 while True:
 

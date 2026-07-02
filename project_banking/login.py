@@ -1,3 +1,4 @@
+import re
 from bank import Bank
 from filehandler import FileHandler
 from deposit import Deposit
@@ -8,35 +9,40 @@ from balance import Balance
 class Login(Bank):
 
     def __init__(self):
-
         self.file = FileHandler()
 
     # ---------- Polymorphism ----------
-
     def operation(self):
-
         print("Login Operation")
 
     # ---------- Login ----------
-
     def login(self):
 
         self.operation()
 
         customers = self.file.load_users()
 
-        username = input("Enter Username : ").strip().lower()
-        password = input("Enter Password : ")
+        # ---------- Username ----------
+        while True:
+            username = input("Enter Username : ").strip().lower()
+
+            if re.fullmatch(r"[a-zA-Z0-9]{5,15}", username):
+                break
+
+            print("Invalid Username (5-15 letters and numbers only)")
+
+        # ---------- Password ----------
+        password = input("Enter Password : ").strip()
 
         found = False
 
         for user in customers:
 
-            if username == user.get_username() and password == user.get_password():
+            if user.get_username() == username and user.get_password() == password:
 
                 found = True
 
-                print("Login Successful")
+                print("\nLogin Successful")
 
                 while True:
 
@@ -47,7 +53,11 @@ class Login(Bank):
 4. Logout
 """)
 
-                    option = int(input("Enter Your Choice : "))
+                    try:
+                        option = int(input("Enter Your Choice : "))
+                    except ValueError:
+                        print("Please enter a valid number.")
+                        continue
 
                     match option:
 
@@ -62,12 +72,10 @@ class Login(Bank):
                                 self.file.save_users(customers)
 
                                 self.file.save_transaction(
-
                                     user.get_username(),
                                     "Deposit",
                                     deposit.amount,
                                     user.get_balance()
-
                                 )
 
                         case 2:
@@ -81,12 +89,10 @@ class Login(Bank):
                                 self.file.save_users(customers)
 
                                 self.file.save_transaction(
-
                                     user.get_username(),
                                     "Withdraw",
                                     withdraw.amount,
                                     user.get_balance()
-
                                 )
 
                         case 3:
@@ -106,6 +112,6 @@ class Login(Bank):
 
                 break
 
-        if found == False:
+        if not found:
 
             print("Invalid Username or Password")
