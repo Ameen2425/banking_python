@@ -7,7 +7,6 @@ login = Login()
 print("WELCOME TO PYTHON BANK")
 
 while True:
-
     print("""
 1. Signup
 2. Login

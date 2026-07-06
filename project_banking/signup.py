@@ -61,7 +61,7 @@ class Signup(Bank):
             email = input("Enter Email : ").strip()
 
             if re.fullmatch(
-                r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$",
+                r"^[a-zA-Z0-9_.+-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$",
                 email,
             ):
                 break

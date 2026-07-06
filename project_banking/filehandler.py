@@ -7,46 +7,45 @@ class FileHandler:
 
     def __init__(self):
 
-        self.user_file = "users.csv"
-        self.transaction_file = "transactions.csv"
+        # ---------- Go to Desktop ----------
 
-        if not os.path.exists(self.user_file):
+        os.chdir("C:\\Users\\user\\Desktop")
 
-            file = open(self.user_file, "w", newline="")
+        # ---------- Create Folder ----------
 
-            writer = csv.DictWriter(
-                file,
-                fieldnames=[
-                    "Name",
-                    "Age",
-                    "Username",
-                    "Email",
-                    "Password",
-                    "Balance"
-                ]
-            )
+        if not os.path.exists("Banking_Project"):
 
-            writer.writeheader()
+            os.mkdir("Banking_Project")
 
-            file.close()
+        # ---------- Change Directory ----------
 
-        if not os.path.exists(self.transaction_file):
+        os.chdir("Banking_Project")
 
-            file = open(self.transaction_file, "w", newline="")
+        # ---------- Create users.csv ----------
 
-            writer = csv.DictWriter(
-                file,
-                fieldnames=[
-                    "Username",
-                    "Type",
-                    "Amount",
-                    "Balance"
-                ]
-            )
+        if not os.path.exists("users.csv"):
 
-            writer.writeheader()
+            with open("users.csv", "w", newline="") as file:
 
-            file.close()
+                writer = csv.DictWriter(
+                    file,
+                    fieldnames=["Name","Age","Username","Email","Password","Balance"]
+                )
+
+                writer.writeheader()
+
+        # ---------- Create transactions.csv ----------
+
+        if not os.path.exists("transactions.csv"):
+
+            with open("transactions.csv", "w", newline="") as file:
+
+                writer = csv.DictWriter(
+                    file,
+                    fieldnames=["Username","Type","Amount","Balance"]
+                )
+
+                writer.writeheader()
 
     # ---------- Load Users ----------
 
@@ -54,26 +53,24 @@ class FileHandler:
 
         customers = []
 
-        file = open(self.user_file, "r", newline="")
+        with open("users.csv", "r", newline="") as file:
 
-        reader = csv.DictReader(file)
+            reader = csv.DictReader(file)
 
-        for row in reader:
+            for row in reader:
 
-            user = Customer(
+                user = Customer(
 
-                row["Name"],
-                int(row["Age"]),
-                row["Username"],
-                row["Email"],
-                row["Password"],
-                int(row["Balance"])
+                    row["Name"],
+                    int(row["Age"]),
+                    row["Username"],
+                    row["Email"],
+                    row["Password"],
+                    int(row["Balance"])
 
-            )
+                )
 
-            customers.append(user)
-
-        file.close()
+                customers.append(user)
 
         return customers
 
@@ -81,60 +78,44 @@ class FileHandler:
 
     def save_users(self, customers):
 
-        file = open(self.user_file, "w", newline="")
+        with open("users.csv", "w", newline="") as file:
 
-        writer = csv.DictWriter(
-            file,
-            fieldnames=[
-                "Name",
-                "Age",
-                "Username",
-                "Email",
-                "Password",
-                "Balance"
-            ]
-        )
+            writer = csv.DictWriter(
+                file,
+                fieldnames=["Name","Age","Username","Email","Password","Balance"]
+            )
 
-        writer.writeheader()
+            writer.writeheader()
 
-        for user in customers:
+            for user in customers:
 
-            writer.writerow({
+                writer.writerow({
 
-                "Name": user.get_name(),
-                "Age": user.get_age(),
-                "Username": user.get_username(),
-                "Email": user.get_email(),
-                "Password": user.get_password(),
-                "Balance": user.get_balance()
+                    "Name": user.get_name(),
+                    "Age": user.get_age(),
+                    "Username": user.get_username(),
+                    "Email": user.get_email(),
+                    "Password": user.get_password(),
+                    "Balance": user.get_balance()
 
-            })
+                })
 
-        file.close()
-
-    # ---------- Save Transaction ----------
+    # ---------- Save Transactions ----------
 
     def save_transaction(self, username, transaction_type, amount, balance):
 
-        file = open(self.transaction_file, "a", newline="")
+        with open("transactions.csv", "a", newline="") as file:
 
-        writer = csv.DictWriter(
-            file,
-            fieldnames=[
-                "Username",
-                "Type",
-                "Amount",
-                "Balance"
-            ]
-        )
+            writer = csv.DictWriter(
+                file,
+                fieldnames=["Username","Type","Amount","Balance"]
+            )
 
-        writer.writerow({
+            writer.writerow({
 
-            "Username": username,
-            "Type": transaction_type,
-            "Amount": amount,
-            "Balance": balance
+                "Username": username,
+                "Type": transaction_type,
+                "Amount": amount,
+                "Balance": balance
 
-        })
-
-        file.close()
+            })
