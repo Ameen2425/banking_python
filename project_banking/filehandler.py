@@ -7,42 +7,46 @@ class FileHandler:
 
     def __init__(self):
 
-        # ---------- Go to Desktop ----------
+        self.folder = "C:\\Users\\user\\Desktop\\Banking_Project"
 
-        os.chdir("C:\\Users\\user\\Desktop")
+        if not os.path.exists(self.folder):
 
-        # ---------- Create Folder ----------
+            os.makedirs(self.folder)
 
-        if not os.path.exists("Banking_Project"):
+        self.user_file = self.folder + "\\users.csv"
 
-            os.mkdir("Banking_Project")
+        self.transaction_file = self.folder + "\\transactions.csv"
 
-        # ---------- Change Directory ----------
+        if not os.path.exists(self.user_file):
 
-        os.chdir("Banking_Project")
-
-        # ---------- Create users.csv ----------
-
-        if not os.path.exists("users.csv"):
-
-            with open("users.csv", "w", newline="") as file:
+            with open(self.user_file, "w", newline="") as file:
 
                 writer = csv.DictWriter(
                     file,
-                    fieldnames=["Name","Age","Username","Email","Password","Balance"]
+                    fieldnames=[
+                        "Name",
+                        "Age",
+                        "Username",
+                        "Email",
+                        "Password",
+                        "Balance"
+                    ]
                 )
 
                 writer.writeheader()
 
-        # ---------- Create transactions.csv ----------
+        if not os.path.exists(self.transaction_file):
 
-        if not os.path.exists("transactions.csv"):
-
-            with open("transactions.csv", "w", newline="") as file:
+            with open(self.transaction_file, "w", newline="") as file:
 
                 writer = csv.DictWriter(
                     file,
-                    fieldnames=["Username","Type","Amount","Balance"]
+                    fieldnames=[
+                        "Username",
+                        "Type",
+                        "Amount",
+                        "Balance"
+                    ]
                 )
 
                 writer.writeheader()
@@ -53,7 +57,7 @@ class FileHandler:
 
         customers = []
 
-        with open("users.csv", "r", newline="") as file:
+        with open(self.user_file, "r", newline="") as file:
 
             reader = csv.DictReader(file)
 
@@ -78,11 +82,18 @@ class FileHandler:
 
     def save_users(self, customers):
 
-        with open("users.csv", "w", newline="") as file:
+        with open(self.user_file, "w", newline="") as file:
 
             writer = csv.DictWriter(
                 file,
-                fieldnames=["Name","Age","Username","Email","Password","Balance"]
+                fieldnames=[
+                    "Name",
+                    "Age",
+                    "Username",
+                    "Email",
+                    "Password",
+                    "Balance"
+                ]
             )
 
             writer.writeheader()
@@ -100,15 +111,20 @@ class FileHandler:
 
                 })
 
-    # ---------- Save Transactions ----------
+    # ---------- Save Transaction ----------
 
     def save_transaction(self, username, transaction_type, amount, balance):
 
-        with open("transactions.csv", "a", newline="") as file:
+        with open(self.transaction_file, "a", newline="") as file:
 
             writer = csv.DictWriter(
                 file,
-                fieldnames=["Username","Type","Amount","Balance"]
+                fieldnames=[
+                    "Username",
+                    "Type",
+                    "Amount",
+                    "Balance"
+                ]
             )
 
             writer.writerow({
