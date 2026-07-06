@@ -23,14 +23,7 @@ class FileHandler:
 
                 writer = csv.DictWriter(
                     file,
-                    fieldnames=[
-                        "Name",
-                        "Age",
-                        "Username",
-                        "Email",
-                        "Password",
-                        "Balance"
-                    ]
+                    fieldnames=["Name","Age","Username","Email","Password","Balance"]
                 )
 
                 writer.writeheader()
@@ -41,12 +34,7 @@ class FileHandler:
 
                 writer = csv.DictWriter(
                     file,
-                    fieldnames=[
-                        "Username",
-                        "Type",
-                        "Amount",
-                        "Balance"
-                    ]
+                    fieldnames=["Username","Type","Amount","Balance"]
                 )
 
                 writer.writeheader()
@@ -86,14 +74,7 @@ class FileHandler:
 
             writer = csv.DictWriter(
                 file,
-                fieldnames=[
-                    "Name",
-                    "Age",
-                    "Username",
-                    "Email",
-                    "Password",
-                    "Balance"
-                ]
+                fieldnames=["Name", "Age","Username","Email","Password","Balance"]
             )
 
             writer.writeheader()
@@ -119,12 +100,7 @@ class FileHandler:
 
             writer = csv.DictWriter(
                 file,
-                fieldnames=[
-                    "Username",
-                    "Type",
-                    "Amount",
-                    "Balance"
-                ]
+                fieldnames=["Username","Type","Amount","Balance"]
             )
 
             writer.writerow({
